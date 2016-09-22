@@ -1,4 +1,4 @@
-锘緻echo off
+@echo off
 TITLE UNV TOOLKIT by fotix
 SET LANG=EN
 CHCP 936>NUL 2>NUL&&SET LANG=CN 
@@ -13,9 +13,9 @@ IF %LANG%==CN (
 ECHO EN
 
 :menu_cn
-ECHO    1. Bootloader
-ECHO    2. Advanced Mode
-PAUSE
+ECHO    1. 一键解锁 Bootloader
+ECHO    2. 进入高级模式
+PAUSE>NUL
 ECHO %LANG%
 
 
@@ -116,5 +116,21 @@ adb push install.sh /sdcard/recovery/install.sh
 adb shell sh -v /sdcard/recovery/install.sh
 @echo off
 
-:unlock
-::
+:unlockfile
+ECHO.
+echo                 请确认设备已经连接 PC，并安装 ADB，FASTBOOT 驱动
+echo.
+echo                            ↓↓↓ 按任意键开始 ↓↓↓
+pause>nul
+echo      ---------------------------------------------------------------------
+echo      1. 正在获取 manfID 和 serial 信息...
+adb shell "cat /sys/block/mmcblk0/device/manfid" > manfid.txt
+adb shell "cat /sys/block/mmcblk0/device/serial" > serial.txt
+set /p manfid=< manfid.txt
+set /p serial=< serial.txt
+set unlock=0x%manfid:~6,2%%serial:~2,8%
+echo            设备 manfid 为：%manfid%
+ECHO            设备 manfid 为：%serial%
+cublock.exe %manfid% %serial%
+pause
+
