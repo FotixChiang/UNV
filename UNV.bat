@@ -1,6 +1,7 @@
 @echo off
 TITLE UNV TOOLKIT by fotix
 SET LANG=EN
+MKDIR TEMP
 CHCP 936>NUL 2>NUL&&SET LANG=CN 
 rem check the system language, if it is not chinese then keep it in english
 IF %LANG%==CN ( 
@@ -20,6 +21,11 @@ ECHO %LANG%
 
 
 PAUSE
+
+:info
+IF %device%=thor (
+    XCOPY /Y files\thor\* TEMP\
+) 
 
 :check_EN
 ECHO               PLEASE CONNECT YOUR DEVICE
@@ -133,4 +139,10 @@ echo            设备 manfid 为：%manfid%
 ECHO            设备 manfid 为：%serial%
 cublock.exe %manfid% %serial%
 pause
+
+:filereplace
+adb push twrp_cubed.img /sdcard/
+adb push aboot_vuln.mbn /sdcard/
+adb shell "su -c 'dd if=/sdcard/twrp_cubed.img of=/dev/block/platform/msm_sdcc.1/by-name/recovery'"
+adb shell "su -c 'dd if=/sdcard/aboot_vuln.mbn of=/dev/block/platform/msm_sdcc.1/by-name/aboot'"
 
